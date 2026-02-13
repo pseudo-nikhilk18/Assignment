@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import SubmissionForm from "./components/SubmissionForm";
+import StatusDisplay from "./components/StatusDisplay";
+import SubmissionResult from "./components/SubmissionResult";
+import { useSubmission } from "./hooks/useSubmission";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { status, attempt, error, data, submit } = useSubmission();
+
+  const isDisabled =
+    status === "submitting" || status === "retrying";
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-6">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+          Eventually Consistent Form
+        </h1>
+
+        <SubmissionForm
+          onSubmit={submit}
+          disabled={isDisabled}
+          status={status}
+        />
+
+        <StatusDisplay
+          status={status}
+          attempt={attempt}
+          error={error}
+        />
+
+        <SubmissionResult data={data} />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
